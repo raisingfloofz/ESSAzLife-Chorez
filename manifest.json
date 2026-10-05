@@ -1,0 +1,24 @@
+{
+  "name": "ESSAzLife Chorez",
+  "short_name": "Chorez",
+  "description": "Complete chores, earn Chorez Coins, and take care of MooCow!",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f4a261",
+  "icons": [
+    {
+      "src": "chorez-images/Chorez-Peach-Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "chorez-images/Chorez-Peach-Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
