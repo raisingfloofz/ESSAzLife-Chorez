@@ -9,16 +9,10 @@
   "theme_color": "#f4a261",
   "icons": [
     {
-      "src": "chorez-images/Chorez-Peach-Icon.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "chorez-images/Chorez-Peach-Icon.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "maskable"
+        "src": "./chorez-images/Chorez-App-Icon.png",
+        "sizes": "1024x1024",
+        "type": "image/png",
+        "purpose": "any"
     }
-  ]
+]
 }

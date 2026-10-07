@@ -637,7 +637,8 @@ main h2 {
 
     z-index: 4;
 
-    padding: 15px;
+    padding: 10px 12px;
+    box-sizing: border-box;
 
     background: white;
 
@@ -647,8 +648,8 @@ main h2 {
         0 5px 18px
         rgba(0, 0, 0, 0.18);
 
-    font-size: 14px;
-    line-height: 1.35;
+    font-size: 13px;
+    line-height: 1.25;
 
     opacity: 0;
 
@@ -659,7 +660,6 @@ main h2 {
         opacity 0.4s ease,
         transform 0.4s ease;
 }
-
 
 .speech-bubble.show {
     opacity: 1;
@@ -710,7 +710,7 @@ main h2 {
     position: fixed;
     inset: 0;
 
-    z-index: 7000;
+    z-index: 10000;
 
     display: flex;
     align-items: center;
@@ -2398,14 +2398,15 @@ main h2 {
 
 
 .history-status-heading.not-done {
-    background: #ffe5df;
+    background: #dcecff;
+    color: #245b91;
 }
 
 
 .history-status-heading.done {
-    background: #e4f5e7;
+    background: #ffe5df;
+    color: #8a493b;
 }
-
 
 .history-status-empty {
     padding: 14px;
@@ -2423,12 +2424,12 @@ main h2 {
 
 
 .history-not-done-entry {
-    border-left: 4px solid #ff9d86;
+    border-left: 4px solid #4a90e2;
 }
 
 
 .history-done-entry {
-    border-left: 4px solid #8bc99a;
+    border-left: 4px solid #ff9d86;
 }
 
 
@@ -2641,6 +2642,39 @@ main h2 {
     background: #ff8f75;
 
     transform: translateX(-50%);
+}
+
+/* A day that contains unfinished chores */
+
+.history-calendar-day.has-unfinished::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 5px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #4a90e2;
+
+    transform: translateX(-50%);
+}
+
+
+/* If a day has BOTH completed and unfinished chores,
+   place the dots beside each other */
+
+.history-calendar-day.has-history.has-unfinished::after {
+    left: calc(50% - 5px);
+}
+
+
+.history-calendar-day.has-history.has-unfinished::before {
+    left: calc(50% + 5px);
 }
 
 
@@ -3381,4 +3415,356 @@ main h2 {
 #delete-account-confirm-overlay .danger-button {
     background: #ff9d89;
     color: #252525;
+}
+
+/* =========================================
+   HISTORY ADD CHORE BUTTON
+========================================= */
+
+.history-selected-date-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.history-selected-date-row h2 {
+    margin: 0;
+}
+
+.history-add-chore-button {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #ffad99;
+    color: #222;
+
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 10px
+        rgba(0, 0, 0, 0.12);
+}
+
+.history-add-chore-button:hover {
+    transform: scale(1.06);
+}
+
+.history-add-chore-button:active {
+    transform: scale(0.94);
+}
+
+/* =========================================
+   CHORE HISTORY ACTION MENU
+========================================= */
+
+.history-chore-menu-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 11000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background:
+        rgba(0, 0, 0, 0.7);
+}
+
+.history-chore-menu-overlay.hidden {
+    display: none;
+}
+
+.history-chore-menu-popup {
+    width: min(90%, 380px);
+
+    padding: 24px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.25);
+}
+
+.history-chore-menu-popup h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.history-chore-menu-popup p {
+    margin-bottom: 20px;
+}
+
+.history-chore-menu-popup button {
+    display: block;
+
+    width: 100%;
+
+    margin: 10px 0;
+    padding: 14px 16px;
+
+    border: none;
+    border-radius: 12px;
+
+    font: inherit;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#history-edit-chore {
+    background: #ffad99;
+    color: #222;
+}
+
+#history-delete-chore {
+    background: #e05a5a;
+    color: white;
+}
+
+#history-cancel-chore-menu {
+    background: #e8e8e8;
+    color: #222;
+}
+
+.history-chore-menu-popup button:active {
+    transform: scale(0.98);
+}
+
+
+/* Make calendar chores look tappable */
+
+.history-clickable-entry {
+    width: 100%;
+
+    border: none;
+
+    font: inherit;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+/* =========================================
+   DELETE HISTORY CHORE CONFIRMATION
+========================================= */
+
+.history-delete-confirm-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 12000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background:
+        rgba(0, 0, 0, 0.7);
+}
+
+.history-delete-confirm-overlay.hidden {
+    display: none;
+}
+
+.history-delete-confirm-popup {
+    width: min(90%, 380px);
+
+    padding: 24px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.25);
+}
+
+.history-delete-confirm-popup h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.history-delete-confirm-popup p {
+    margin: 8px 0;
+}
+
+.history-delete-warning {
+    font-size: 14px;
+    font-weight: bold;
+
+    color: #b33;
+}
+
+.history-delete-confirm-buttons {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.history-delete-confirm-buttons button {
+    flex: 1;
+
+    padding: 14px 16px;
+
+    border: none;
+    border-radius: 12px;
+
+    font: inherit;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#history-confirm-delete {
+    background: #e05a5a;
+    color: white;
+}
+
+#history-cancel-delete {
+    background: #e8e8e8;
+    color: #222;
+}
+
+.history-delete-confirm-buttons button:active {
+    transform: scale(0.97);
+}
+
+#history-complete-chore {
+    background: #ffad99;
+    color: #222;
+}
+
+/* =========================================
+   MY CHOREZ DATE + TIME
+========================================= */
+
+.my-chorez-heading {
+    margin-bottom: 4px;
+}
+
+.my-chorez-heading h2 {
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+
+#main-chorez-datetime {
+    margin: 0;
+
+    font-family:
+        "Trebuchet MS",
+        sans-serif;
+
+    font-size: 14px;
+    font-style: italic;
+
+    line-height: 1.2;
+
+    color: #555;
+}
+
+/* =========================================
+   CHORE HISTORY - TODAY
+========================================= */
+
+.history-calendar-day.history-today {
+    background: #ffe1d8;
+    border: 2px solid #ffad99;
+
+    font-weight: bold;
+}
+
+/* =========================================
+   CHORE HISTORY CALENDAR KEY
+========================================= */
+
+.history-calendar-key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+    gap: 8px 16px;
+
+    margin-top: 12px;
+
+    font-size: 12px;
+    color: #666;
+}
+
+.history-key-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.history-key-dot {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+.history-key-dot.completed {
+    background: #ff8f75;
+}
+
+.history-key-dot.scheduled {
+    background: #4a90e2;
+}
+
+/* =========================================
+   HUNGRY MOOCOW - BED REST
+========================================= */
+
+.room-moocow.hungry-bed-rest {
+    left: 18%;
+    top: 65%;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(90deg)
+       scale(0.68);
+
+    transform-origin: center;
+
+    transition:
+        left 1.2s ease,
+        top 1.2s ease,
+        transform 1.2s ease;
+
+    z-index: 3;
 }

@@ -21,6 +21,11 @@ const switchButton =
         "switch-button"
     );
 
+const mainChorezDateTime =
+    document.getElementById(
+        "main-chorez-datetime"
+    );
+
 
 // ---------- HELP POPUP ----------
 
@@ -130,6 +135,67 @@ const historySelectedDate =
         "history-selected-date"
     );
 
+const historyAddChoreButton =
+    document.getElementById(
+        "history-add-chore"
+    );
+
+// ---------- CHORE HISTORY ACTION MENU ----------
+
+const historyChoreMenu =
+    document.getElementById(
+        "history-chore-menu"
+    );
+
+const historyChoreMenuName =
+    document.getElementById(
+        "history-chore-menu-name"
+    );
+
+const historyEditChoreButton =
+    document.getElementById(
+        "history-edit-chore"
+    );
+
+const historyCompleteChoreButton =
+    document.getElementById(
+        "history-complete-chore"
+    );
+
+const historyDeleteChoreButton =
+    document.getElementById(
+        "history-delete-chore"
+    );
+
+const historyCancelChoreMenuButton =
+    document.getElementById(
+        "history-cancel-chore-menu"
+    );
+
+let selectedHistoryChoreType = null;
+let selectedHistoryChore = null;
+
+// ---------- DELETE CHORE CONFIRMATION ----------
+
+const historyDeleteConfirm =
+    document.getElementById(
+        "history-delete-confirm"
+    );
+
+const historyDeleteConfirmMessage =
+    document.getElementById(
+        "history-delete-confirm-message"
+    );
+
+const historyConfirmDeleteButton =
+    document.getElementById(
+        "history-confirm-delete"
+    );
+
+const historyCancelDeleteButton =
+    document.getElementById(
+        "history-cancel-delete"
+    );
 
 // ---------- DATE & TIME ----------
 
@@ -275,6 +341,11 @@ const chorePopup =
 const choreNameInput =
     document.getElementById(
         "chore-name"
+    );
+
+    const chorePopupTitle =
+    document.getElementById(
+        "chore-popup-title"
     );
 
 const saveChoreButton =
@@ -1016,6 +1087,63 @@ function getCurrentChorezDateTime() {
     };
 }
 
+function updateMainChorezDateTime() {
+
+    if (!mainChorezDateTime) {
+        return;
+    }
+
+
+    const currentClock =
+        getCurrentChorezDateTime() ||
+        getDeviceDateTimeParts();
+
+
+    const date =
+        new Date(
+            currentClock.year,
+            currentClock.month,
+            currentClock.day,
+            currentClock.hour || 0,
+            currentClock.minute || 0
+        );
+
+
+    const dateText =
+        date.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+
+    const timeText =
+        date.toLocaleTimeString(
+            "en-US",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+
+    mainChorezDateTime.textContent =
+        dateText +
+        " • " +
+        timeText;
+}
+
+updateMainChorezDateTime();
+
+setInterval(
+    updateMainChorezDateTime,
+    1000
+);
+
 
 // ==========================================
 // PASSWORD HELPERS
@@ -1553,83 +1681,193 @@ function renderChores() {
     choreList.innerHTML = "";
 
 
-    if (profile.chores.length === 0) {
+    const currentClock =
+    getCurrentChorezDateTime() ||
+    getDeviceDateTimeParts();
 
-        const emptyMessage =
-            document.createElement("p");
 
-        emptyMessage.textContent =
-            "No chores yet!";
+const todayDateKey =
+    getHistoryDateKey(
+        currentClock
+    );
 
-        choreList.appendChild(
-            emptyMessage
+
+const todaysChores =
+    profile.chores
+        .map(
+            (chore, index) => {
+                return {
+                    chore: chore,
+                    originalIndex: index
+                };
+            }
+        )
+        .filter(
+            item => {
+
+                const chore =
+                    item.chore;
+
+
+                /*
+                    Old chores saved before
+                    date tracking existed
+                    will still appear today.
+                */
+
+                if (
+                    typeof chore ===
+                    "string"
+                ) {
+                    return true;
+                }
+
+
+                if (
+                    !chore.addedDateKey
+                ) {
+                    return true;
+                }
+
+
+                return (
+                    chore.addedDateKey ===
+                    todayDateKey
+                );
+            }
         );
 
-        return;
-    }
 
+if (todaysChores.length === 0) {
 
-    profile.chores.forEach(
-        (chore, index) => {
+    const emptyMessage =
+        document.createElement("p");
 
-            const item =
-                document.createElement("div");
+    emptyMessage.textContent =
+        "No chores for today!";
 
-            item.className =
-                "chore-item";
-
-
-            const name =
-                document.createElement("span");
-
-            name.className =
-                "chore-name";
-
-            name.textContent =
-                typeof chore === "string"
-                    ? chore
-                    : chore.name;
-
-
-            const doneButton =
-                document.createElement(
-                    "button"
-                );
-
-            doneButton.className =
-                "complete-chore";
-
-            doneButton.textContent =
-                "Done";
-
-
-            doneButton.addEventListener(
-                "click",
-                () => {
-
-                    completeChore(index);
-                }
-            );
-
-
-            item.appendChild(name);
-
-            item.appendChild(
-                doneButton
-            );
-
-
-            choreList.appendChild(
-                item
-            );
-        }
+    choreList.appendChild(
+        emptyMessage
     );
+
+    return;
 }
 
+
+todaysChores.forEach(
+    itemData => {
+
+        const chore =
+            itemData.chore;
+
+        const originalIndex =
+            itemData.originalIndex;
+
+
+        const item =
+            document.createElement(
+                "div"
+            );
+
+        item.className =
+            "chore-item";
+
+
+        const name =
+            document.createElement(
+                "span"
+            );
+
+        name.className =
+            "chore-name";
+
+        name.textContent =
+            typeof chore === "string"
+                ? chore
+                : chore.name;
+
+
+        const doneButton =
+            document.createElement(
+                "button"
+            );
+
+        doneButton.className =
+            "complete-chore";
+
+        doneButton.textContent =
+            "Done";
+
+
+        doneButton.addEventListener(
+            "click",
+            () => {
+
+                completeChore(
+                    originalIndex
+                );
+            }
+        );
+
+
+        item.appendChild(
+            name
+        );
+
+        item.appendChild(
+            doneButton
+        );
+
+        choreList.appendChild(
+            item
+        );
+    }
+);
+}
+
+historyAddChoreButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            selectedHistoryYear === null ||
+            selectedHistoryMonth === null ||
+            selectedHistoryDay === null
+        ) {
+            return;
+        }
+
+        choreNameInput.value = "";
+
+        chorePopup.dataset.mode =
+            "history";
+        
+        chorePopupTitle.textContent =
+    "Add a Chore";
+
+saveChoreButton.textContent =
+    "Add Chore";
+
+        chorePopup.classList.remove(
+            "hidden"
+        );
+
+        choreNameInput.focus();
+    }
+);
 
 addChoreButton.addEventListener(
     "click",
     () => {
+
+        chorePopup.dataset.mode =
+    "normal";
+
+    chorePopupTitle.textContent =
+    "Add a Chore";
+
+saveChoreButton.textContent =
+    "Add Chore";
 
         choreNameInput.value = "";
 
@@ -1649,6 +1887,28 @@ cancelChoreButton.addEventListener(
         chorePopup.classList.add(
             "hidden"
         );
+
+        chorePopup.dataset.mode =
+    "normal";
+
+
+choreNameInput.value =
+    "";
+
+
+chorePopupTitle.textContent =
+    "Add a Chore";
+
+
+saveChoreButton.textContent =
+    "Add Chore";
+
+
+selectedHistoryChoreType =
+    null;
+
+selectedHistoryChore =
+    null;
     }
 );
 
@@ -1674,6 +1934,117 @@ saveChoreButton.addEventListener(
             return;
         }
 
+      /*
+    EDIT AN EXISTING HISTORY CHORE
+*/
+
+if (
+    chorePopup.dataset.mode ===
+    "historyEdit"
+) {
+
+    if (!selectedHistoryChore) {
+        return;
+    }
+
+
+   if (
+    selectedHistoryChoreType ===
+    "done"
+) {
+
+    const choreIndex =
+        profile.choreHistory.findIndex(
+            chore => {
+
+                return (
+                    chore.dateKey ===
+                        selectedHistoryChore.dateKey &&
+                    chore.name ===
+                        selectedHistoryChore.name &&
+                    chore.hour ===
+                        selectedHistoryChore.hour &&
+                    chore.minute ===
+                        selectedHistoryChore.minute
+                );
+            }
+        );
+
+
+    if (choreIndex === -1) {
+        return;
+    }
+
+
+    profile.choreHistory[
+        choreIndex
+    ].name = name;
+
+} else {
+
+    const choreIndex =
+        profile.chores.findIndex(
+            chore => {
+
+                return (
+                    typeof chore !== "string" &&
+                    chore.addedDateKey ===
+                        selectedHistoryChore.addedDateKey &&
+                    chore.name ===
+                        selectedHistoryChore.name
+                );
+            }
+        );
+
+
+    if (choreIndex === -1) {
+        return;
+    }
+
+
+    profile.chores[
+        choreIndex
+    ].name = name;
+}
+
+
+    saveChorezProfile(
+        profile
+    );
+
+
+    chorePopup.classList.add(
+        "hidden"
+    );
+
+
+    choreNameInput.value = "";
+
+
+    chorePopup.dataset.mode =
+        "normal";
+
+
+    openHistoryDay(
+        selectedHistoryYear,
+        selectedHistoryMonth,
+        selectedHistoryDay
+    );
+
+
+    renderChores();
+
+
+    selectedHistoryChoreType =
+        null;
+
+    selectedHistoryChore =
+        null;
+
+
+    return;
+}
+
 
         if (!Array.isArray(profile.chores)) {
 
@@ -1695,27 +2066,49 @@ saveChoreButton.addEventListener(
             getCurrentChorezDateTime();
 
 
-        const newChore = {
-            name: name
-        };
+        let choreDate =
+    getCurrentChorezDateTime();
 
 
-        if (currentClock) {
+if (
+    chorePopup.dataset.mode ===
+    "history"
+) {
 
-            newChore.addedYear =
-                currentClock.year;
+    choreDate = {
+        year:
+            selectedHistoryYear,
 
-            newChore.addedMonth =
-                currentClock.month;
+        month:
+            selectedHistoryMonth,
 
-            newChore.addedDay =
-                currentClock.day;
+        day:
+            selectedHistoryDay
+    };
+}
 
-            newChore.addedDateKey =
-                getHistoryDateKey(
-                    currentClock
-                );
-        }
+
+const newChore = {
+    name: name
+};
+
+
+if (choreDate) {
+
+    newChore.addedYear =
+        choreDate.year;
+
+    newChore.addedMonth =
+        choreDate.month;
+
+    newChore.addedDay =
+        choreDate.day;
+
+    newChore.addedDateKey =
+        getHistoryDateKey(
+            choreDate
+        );
+}
 
 
         profile.chores.push(
@@ -1737,6 +2130,21 @@ saveChoreButton.addEventListener(
 
 
         renderChores();
+        if (
+    chorePopup.dataset.mode ===
+    "history"
+) {
+
+    openHistoryDay(
+        selectedHistoryYear,
+        selectedHistoryMonth,
+        selectedHistoryDay
+    );
+}
+
+
+chorePopup.dataset.mode =
+    "normal";
     }
 );
 
@@ -1870,6 +2278,10 @@ updateHungerDisplay();
 
 let historyCalendarYear = null;
 let historyCalendarMonth = null;
+
+let selectedHistoryYear = null;
+let selectedHistoryMonth = null;
+let selectedHistoryDay = null;
 
 
 function renderChoreHistory() {
@@ -2033,6 +2445,24 @@ function renderHistoryCalendar() {
                 day
             );
 
+            const currentClock =
+    getCurrentChorezDateTime() ||
+    getDeviceDateTimeParts();
+
+
+const todayDateKey =
+    getHistoryDateKey(
+        currentClock
+    );
+
+
+if (dateKey === todayDateKey) {
+
+    dayButton.classList.add(
+        "history-today"
+    );
+}
+
 
         const hasHistory =
             history.some(
@@ -2048,6 +2478,26 @@ function renderHistoryCalendar() {
                 "has-history"
             );
         }
+
+        const hasUnfinishedChores =
+    profile.chores.some(
+        chore => {
+
+            return (
+                typeof chore !== "string" &&
+                chore.addedDateKey ===
+                    dateKey
+            );
+        }
+    );
+
+
+if (hasUnfinishedChores) {
+
+    dayButton.classList.add(
+        "has-unfinished"
+    );
+}
 
 
         dayButton.addEventListener(
@@ -2069,13 +2519,49 @@ function renderHistoryCalendar() {
     }
 }
 
+function openHistoryChoreMenu(
+    type,
+    chore
+) {
 
+    selectedHistoryChoreType =
+        type;
+
+    selectedHistoryChore =
+        chore;
+
+
+    historyChoreMenuName.textContent =
+        chore.name || "Chore";
+    
+    if (type === "notDone") {
+
+    historyCompleteChoreButton.classList.remove(
+        "hidden"
+    );
+
+} else {
+
+    historyCompleteChoreButton.classList.add(
+        "hidden"
+    );
+}
+
+
+    historyChoreMenu.classList.remove(
+        "hidden"
+    );
+}
 
 function openHistoryDay(
     year,
     month,
     day
 ) {
+
+        selectedHistoryYear = year;
+    selectedHistoryMonth = month;
+    selectedHistoryDay = day;
 
     const profile =
         getChorezProfile();
@@ -2241,43 +2727,59 @@ function openHistoryDay(
     } else {
 
         notDoneEntries.forEach(
-            chore => {
+    chore => {
 
-                const item =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                item.className =
-                    "history-entry history-not-done-entry";
+        const item =
+            document.createElement(
+                "button"
+            );
 
 
-                const name =
-                    document.createElement(
-                        "span"
-                    );
+        item.type =
+            "button";
 
 
-                name.className =
-                    "history-chore-name";
+        item.className =
+            "history-entry history-not-done-entry history-clickable-entry";
 
 
-                name.textContent =
-                    "☐ " +
-                    chore.name;
+        const name =
+            document.createElement(
+                "span"
+            );
 
 
-                item.appendChild(
-                    name
-                );
+        name.className =
+            "history-chore-name";
 
 
-                notDoneSection.appendChild(
-                    item
+        name.textContent =
+            "☐ " +
+            chore.name;
+
+
+        item.appendChild(
+            name
+        );
+
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                openHistoryChoreMenu(
+                    "notDone",
+                    chore
                 );
             }
         );
+
+
+        notDoneSection.appendChild(
+            item
+        );
+    }
+);
     }
 
 
@@ -2343,65 +2845,80 @@ function openHistoryDay(
 
     } else {
 
-        doneEntries.forEach(
-            entry => {
+       doneEntries.forEach(
+    entry => {
 
-                const historyEntry =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                historyEntry.className =
-                    "history-entry history-done-entry";
+        const item =
+            document.createElement(
+                "button"
+            );
 
 
-                const time =
-                    document.createElement(
-                        "span"
-                    );
+        item.type =
+            "button";
 
 
-                time.className =
-                    "history-time";
+        item.className =
+            "history-entry history-done-entry history-clickable-entry";
 
 
-                time.textContent =
-                    formatHistoryTime(
-                        entry
-                    );
+        const name =
+            document.createElement(
+                "span"
+            );
 
 
-                const name =
-                    document.createElement(
-                        "span"
-                    );
+        name.className =
+            "history-chore-name";
 
 
-                name.className =
-                    "history-chore-name";
+        name.textContent =
+            "✓ " +
+            entry.name;
 
 
-                name.textContent =
-                    "✓ " +
-                    entry.name;
+        const time =
+            document.createElement(
+                "span"
+            );
 
 
-                historyEntry.appendChild(
-                    time
-                );
+        time.className =
+            "history-chore-time";
 
 
-                historyEntry.appendChild(
-                    name
-                );
+        time.textContent =
+            formatHistoryTime(
+                entry
+            );
 
 
-                doneSection.appendChild(
-                    historyEntry
+        item.appendChild(
+            name
+        );
+
+        item.appendChild(
+            time
+        );
+
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                openHistoryChoreMenu(
+                    "done",
+                    entry
                 );
             }
         );
+
+
+        doneSection.appendChild(
+            item
+        );
+    }
+);
     }
 
 
@@ -2543,6 +3060,27 @@ function updateHungerDisplay() {
 
     hungerNumber.textContent =
         hunger + "%";
+    
+    const mooCow =
+    document.getElementById(
+        "room-moocow"
+    );
+
+if (mooCow) {
+
+    if (hunger <= 50) {
+
+        mooCow.classList.add(
+            "hungry-bed-rest"
+        );
+
+    } else {
+
+        mooCow.classList.remove(
+            "hungry-bed-rest"
+        );
+    }
+}
 
 
     if (hunger >= 75) {
@@ -2978,6 +3516,348 @@ visitMooCowButton.addEventListener(
 
 
         startNormalMooCowEntrance();
+    }
+);
+
+historyCompleteChoreButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            !selectedHistoryChore ||
+            selectedHistoryChoreType !== "notDone"
+        ) {
+            return;
+        }
+
+        const profile =
+            getChorezProfile();
+
+        if (
+            !profile ||
+            !Array.isArray(profile.chores)
+        ) {
+            return;
+        }
+
+        const choreIndex =
+            profile.chores.findIndex(
+                chore => {
+
+                    return (
+                        typeof chore !== "string" &&
+                        chore.addedDateKey ===
+                            selectedHistoryChore.addedDateKey &&
+                        chore.name ===
+                            selectedHistoryChore.name
+                    );
+                }
+            );
+
+        if (choreIndex === -1) {
+            return;
+        }
+
+        const completedChore =
+            profile.chores[choreIndex];
+
+        const currentClock =
+            getCurrentChorezDateTime() ||
+            getDeviceDateTimeParts();
+
+        if (
+            !Array.isArray(
+                profile.choreHistory
+            )
+        ) {
+            profile.choreHistory = [];
+        }
+
+        profile.choreHistory.push({
+            name:
+                completedChore.name,
+
+            year:
+                currentClock.year,
+
+            month:
+                currentClock.month,
+
+            day:
+                currentClock.day,
+
+            hour:
+                currentClock.hour,
+
+            minute:
+                currentClock.minute,
+
+            dateKey:
+                getHistoryDateKey(
+                    currentClock
+                )
+        });
+
+        profile.chores.splice(
+            choreIndex,
+            1
+        );
+
+        profile.coins =
+            (profile.coins || 0) + 1;
+
+        saveChorezProfile(
+            profile
+        );
+
+        historyChoreMenu.classList.add(
+            "hidden"
+        );
+
+        selectedHistoryChoreType =
+            null;
+
+        selectedHistoryChore =
+            null;
+
+        renderChores();
+
+        openHistoryDay(
+            selectedHistoryYear,
+            selectedHistoryMonth,
+            selectedHistoryDay
+        );
+    }
+);
+
+historyEditChoreButton.addEventListener(
+    "click",
+    () => {
+
+        if (!selectedHistoryChore) {
+            return;
+        }
+
+
+        /*
+            Put the current chore name
+            into the existing chore popup.
+        */
+
+        choreNameInput.value =
+            selectedHistoryChore.name;
+
+
+        /*
+            Tell the popup that we're
+            EDITING instead of adding.
+        */
+
+        chorePopup.dataset.mode =
+            "historyEdit";
+        
+        chorePopupTitle.textContent =
+    "Edit Chore";
+
+saveChoreButton.textContent =
+    "Save Changes";
+
+
+        /*
+            Close the action menu.
+        */
+
+        historyChoreMenu.classList.add(
+            "hidden"
+        );
+
+
+        /*
+            Open the chore-name popup.
+        */
+
+        chorePopup.classList.remove(
+            "hidden"
+        );
+
+
+        choreNameInput.focus();
+        choreNameInput.select();
+    }
+);
+
+historyDeleteChoreButton.addEventListener(
+    "click",
+    () => {
+
+        if (!selectedHistoryChore) {
+            return;
+        }
+
+
+        historyDeleteConfirmMessage.textContent =
+            'Are you sure you want to delete "' +
+            selectedHistoryChore.name +
+            '"?';
+
+
+        historyChoreMenu.classList.add(
+            "hidden"
+        );
+
+
+        historyDeleteConfirm.classList.remove(
+            "hidden"
+        );
+    }
+);
+
+historyCancelDeleteButton.addEventListener(
+    "click",
+    () => {
+
+        historyDeleteConfirm.classList.add(
+            "hidden"
+        );
+
+
+        historyChoreMenu.classList.remove(
+            "hidden"
+        );
+    }
+);
+
+
+historyConfirmDeleteButton.addEventListener(
+    "click",
+    () => {
+
+        if (!selectedHistoryChore) {
+            return;
+        }
+
+
+        const profile =
+            getChorezProfile();
+
+
+        if (
+            !profile ||
+            !Array.isArray(
+                profile.chores
+            )
+        ) {
+            return;
+        }
+
+
+        if (
+    selectedHistoryChoreType ===
+    "done"
+) {
+
+    const choreIndex =
+        profile.choreHistory.findIndex(
+            chore => {
+
+                return (
+                    chore.dateKey ===
+                        selectedHistoryChore.dateKey &&
+                    chore.name ===
+                        selectedHistoryChore.name &&
+                    chore.hour ===
+                        selectedHistoryChore.hour &&
+                    chore.minute ===
+                        selectedHistoryChore.minute
+                );
+            }
+        );
+
+
+    if (choreIndex === -1) {
+        return;
+    }
+
+
+    profile.choreHistory.splice(
+        choreIndex,
+        1
+    );
+
+} else {
+
+    const choreIndex =
+        profile.chores.findIndex(
+            chore => {
+
+                return (
+                    typeof chore !== "string" &&
+                    chore.addedDateKey ===
+                        selectedHistoryChore.addedDateKey &&
+                    chore.name ===
+                        selectedHistoryChore.name
+                );
+            }
+        );
+
+
+    if (choreIndex === -1) {
+        return;
+    }
+
+
+    profile.chores.splice(
+        choreIndex,
+        1
+    );
+}
+
+
+        saveChorezProfile(
+            profile
+        );
+
+
+        historyDeleteConfirm.classList.add(
+            "hidden"
+        );
+
+
+        openHistoryDay(
+            selectedHistoryYear,
+            selectedHistoryMonth,
+            selectedHistoryDay
+        );
+
+
+        renderChores();
+
+
+        selectedHistoryChoreType =
+            null;
+
+        selectedHistoryChore =
+            null;
+    }
+);
+
+// ==========================================
+// CHORE HISTORY ACTION MENU CONTROLS
+// ==========================================
+
+historyCancelChoreMenuButton.addEventListener(
+    "click",
+    () => {
+
+        historyChoreMenu.classList.add(
+            "hidden"
+        );
+
+        selectedHistoryChoreType =
+            null;
+
+        selectedHistoryChore =
+            null;
     }
 );
 
@@ -4789,3 +5669,4 @@ setInterval(
 // ==========================================
 
 initializeApp();
+

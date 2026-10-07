@@ -1,5 +1,5 @@
 const CACHE_NAME =
-    "essazlife-chorez-v1";
+    "essazlife-chorez-v2";
 
 const APP_FILES = [
     "./",
@@ -9,6 +9,7 @@ const APP_FILES = [
     "./manifest.json",
 
     "./chorez-images/Chorez-Peach-Icon.png",
+    "./chorez-images/Chorez-App-Icon.png",
     "./chorez-images/Chorez-Coin.png",
     "./chorez-images/Chorez-Fridge-Shut.png",
     "./chorez-images/Chorez-Intro-Stage.png",

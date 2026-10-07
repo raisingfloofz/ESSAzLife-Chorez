@@ -320,7 +320,17 @@
 
 <main>
 
-    <h2>My Chorez</h2>
+    <div class="my-chorez-heading">
+
+    <h2>
+        My Chorez
+    </h2>
+
+    <div id="main-chorez-datetime">
+        Loading date and time...
+    </div>
+
+</div>
 
     <div class="coin-counter">
 
@@ -380,7 +390,9 @@
 
     <div class="chore-popup-card">
 
-        <h2>Add a Chore</h2>
+        <h2 id="chore-popup-title">
+    Add a Chore
+</h2>
 
         <label for="chore-name">
             What do you need to do?
@@ -485,14 +497,19 @@
                 class="history-calendar-grid"
             ></div>
 
+<div class="history-calendar-key">
 
-            <div class="history-calendar-key">
+    <div class="history-key-item">
+        <span class="history-key-dot completed"></span>
+        Completed chores
+    </div>
 
-                <span class="history-key-dot"></span>
+    <div class="history-key-item">
+        <span class="history-key-dot scheduled"></span>
+        Scheduled / not done
+    </div>
 
-                Completed chores
-
-            </div>
+</div>
 
         </div>
 
@@ -523,9 +540,25 @@
 
             </div>
 
-            <h2 id="history-selected-date">
-                Monday, October 5, 2026
-            </h2>
+
+            <div class="history-selected-date-row">
+
+                <h2 id="history-selected-date">
+                    Monday, October 5, 2026
+                </h2>
+
+                <button
+                    id="history-add-chore"
+                    class="history-add-chore-button"
+                    type="button"
+                    aria-label="Add chore to this date"
+                    title="Add chore"
+                >
+                    +
+                </button>
+
+            </div>
+
 
             <div
                 id="history-list"
@@ -538,6 +571,101 @@
 
 </div>
 
+<!-- =========================================
+     CHORE HISTORY ACTION MENU
+========================================= -->
+
+<div
+    id="history-chore-menu"
+    class="history-chore-menu-overlay hidden"
+>
+
+    <div class="history-chore-menu-popup">
+
+        <h2 id="history-chore-menu-name">
+            Chore
+        </h2>
+
+        <p>
+            What would you like to do?
+        </p>
+        
+        <button
+    id="history-complete-chore"
+    type="button"
+>
+    ✓ Mark Done (+1 Coin)
+</button>
+
+        <button
+            id="history-edit-chore"
+            type="button"
+        >
+            ✏️ Edit Chore
+        </button>
+
+        <button
+            id="history-delete-chore"
+            type="button"
+        >
+            🗑️ Delete Chore
+        </button>
+
+        <button
+            id="history-cancel-chore-menu"
+            type="button"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     DELETE HISTORY CHORE CONFIRMATION
+========================================= -->
+
+<div
+    id="history-delete-confirm"
+    class="history-delete-confirm-overlay hidden"
+>
+
+    <div class="history-delete-confirm-popup">
+
+        <h2>
+            Delete Chore?
+        </h2>
+
+        <p id="history-delete-confirm-message">
+            Are you sure you want to delete this chore?
+        </p>
+
+        <p class="history-delete-warning">
+            This cannot be undone.
+        </p>
+
+        <div class="history-delete-confirm-buttons">
+
+            <button
+                id="history-confirm-delete"
+                type="button"
+            >
+                Delete
+            </button>
+
+            <button
+                id="history-cancel-delete"
+                type="button"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <!-- =========================================
      MOOCOW ROOM
