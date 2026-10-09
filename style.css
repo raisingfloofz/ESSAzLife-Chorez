@@ -3768,3 +3768,32 @@ main h2 {
 
     z-index: 3;
 }
+
+/* CHOREZ HEADER — FOUR NAVIGATION BUTTONS */
+
+@media (max-width: 500px) {
+    .header-navigation {
+        gap: 4px;
+        margin-left: 5px;
+    }
+
+    .header-nav-button {
+        width: 34px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .header-brand {
+        min-width: 0;
+    }
+
+    header h1 {
+        font-size: 15px;
+    }
+
+    .app-icon {
+        width: 36px;
+        height: 36px;
+        margin-right: 5px;
+    }
+}

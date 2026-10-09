@@ -4456,6 +4456,33 @@ mooCowTeddy.addEventListener(
 );
 
 // ==========================================
+// CHOREZ UPDATES
+// ==========================================
+
+const updatesButton =
+    document.getElementById("updates-button");
+
+const updatesOverlay =
+    document.getElementById("updates-overlay");
+
+const closeUpdatesButton =
+    document.getElementById("close-updates");
+
+updatesButton.addEventListener("click", () => {
+    updatesOverlay.classList.remove("hidden");
+});
+
+closeUpdatesButton.addEventListener("click", () => {
+    updatesOverlay.classList.add("hidden");
+});
+
+updatesOverlay.addEventListener("click", (event) => {
+    if (event.target === updatesOverlay) {
+        updatesOverlay.classList.add("hidden");
+    }
+});
+
+// ==========================================
 // HELP
 // ==========================================
 
