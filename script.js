@@ -3068,7 +3068,7 @@ function updateHungerDisplay() {
 
 if (mooCow) {
 
-    if (hunger <= 50) {
+    if (hunger > 0 && hunger <= 25) {
 
         mooCow.classList.add(
             "hungry-bed-rest"
